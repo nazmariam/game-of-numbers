@@ -1,1 +1,1 @@
-# game-of-numbers
+2048 game on React

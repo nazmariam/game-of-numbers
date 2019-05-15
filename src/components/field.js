@@ -1,75 +1,148 @@
 import React, { Component } from "react";
 
-export default class Field extends Component{
-    state={
-        cells:[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
-    };
-    size = 4;
-    componentDidMount() {
-        document.addEventListener('keydown',this.handleKeyDown);
-        let cells = this.makeRandomCell(this.state.cells);
-        cells = this.makeRandomCell(cells);
-        this.setState(cells);
+export default class Field extends Component {
+  state = {
+    cells: [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ]
+  };
+  size = 4;
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+    let cells = this.makeRandomCell(this.state.cells);
+    cells = this.makeRandomCell(cells);
+    this.setState(cells);
+  }
+
+  initNewField() {
+    let allCells = this.state.cells.map(item => {
+      return item.map(i => {
+        return <div className="cell">{i ? i : ""}</div>;
+      });
+    });
+
+    return <div className="field">{allCells}</div>;
+  }
+  makeRandomCell(arr) {
+    let rt = this.availableCells();
+    if (this.availableCells().length) {
+      let randomNumber = Math.floor(Math.random() * rt.length);
+      arr[rt[randomNumber].i][rt[randomNumber].j] = Math.random() < 0.9 ? 2 : 4;
     }
-
-    initNewField() {
-        let allCells = this.state.cells.map(item=>{
-            return item.map(i=>{
-                return(
-                    <div className="cell">{i ? i :''}</div>
-                )
-            })
-        });
-
-        return (<div className='field'>{allCells}</div>)
-    };
-    makeRandomCell(arr){
-        let rt = this.availableCells();
-        if(this.availableCells().length){
-            let randomNumber = Math.floor(Math.random()*rt.length);
-            console.log(rt[randomNumber]);
-            arr[rt[randomNumber].i][rt[randomNumber].j] = Math.random()<0.9 ? 2 : 4;
+    return arr;
+  }
+  availableCells() {
+    let avCells = [];
+    if (this.state.cells.length) {
+      for (let i = 0; i < this.size; i++) {
+        for (let j = 0; j < this.size; j++) {
+          if (this.state.cells[i][j] === 0) {
+            avCells.push({ i, j });
+          }
         }
-        return arr;
+      }
     }
-    availableCells (){
-        let avCells = [];
-        if(this.state.cells.length){
-            for(let i=0; i<this.size; i++){
-            for(let j=0;j<this.size;j++){
-                if(this.state.cells[i][j]===0){
-                    avCells.push({i,j})
-                }
+    return avCells;
+  }
+  handleKeyDown(event) {
+    const up = 38;
+    const right = 39;
+    const down = 40;
+    const left = 37;
+
+    if (event.keyCode === up) {
+      this.moveUp(this.state.cells);
+    } else if (event.keyCode === right) {
+      this.moveRight(this.state.cells);
+    } else if (event.keyCode === down) {
+      this.moveDown(this.state.cells);
+    } else if (event.keyCode === left) {
+      this.moveLeft(this.state.cells);
+    }
+  }
+  moveUp(arr){
+    let k =0;
+    while(k<this.size-1){
+      for(let i = 1; i<this.size; i++){
+        for(let j=0; j<this.size; j++){
+          if(arr[i][j]!==0 && arr[i-1][j]===0){
+            arr[i-1][j]=arr[i][j];
+            arr[i][j]=0;
+          }else if(arr[i][j] === arr[i-1][j]){
+            arr[i-1][j]=arr[i][j] + arr[i-1][j];
+            arr[i][j]=0;
+          }
+        }
+      }
+      k++;
+    }
+
+    this.makeRandomCell(arr);
+    this.setState(arr);
+  }
+  moveDown(arr){
+    let k =0;
+    while (k < this.size - 1) {
+      for (let i = this.size - 2; i >= 0; i--) {
+        for (let j = 0; j < this.size; j++) {
+          if (arr[i][j] !== 0 && arr[i + 1][j] === 0) {
+            arr[i + 1][j] = arr[i][j];
+            arr[i][j] = 0;
+          } else if (arr[i][j] === arr[i + 1][j]) {
+            arr[i + 1][j] = arr[i][j] + arr[i + 1][j];
+            arr[i][j] = 0;
+          }
+        }
+      }
+      k++;
+    }
+    this.makeRandomCell(arr);
+    this.setState(arr);
+  }
+  moveLeft(arr){
+    let k =0;
+      while (k < this.size - 1) {
+        for (let i = 0; i < this.size; i++) {
+          for (let j = 1; j < this.size; j++) {
+            if (arr[i][j] !== 0 && arr[i][j - 1] === 0) {
+              arr[i][j - 1] = arr[i][j];
+              arr[i][j] = 0;
+            } else if (arr[i][j] === arr[i][j - 1]) {
+              arr[i][j - 1] = arr[i][j] + arr[i][j - 1];
+              arr[i][j] = 0;
             }
+          }
         }
-        }
-        return avCells;
-    }
-    handleKeyDown(e) {
-        const up = 38;
-        const right = 39;
-        const down = 40;
-        const left = 37
-        const n = 78;
+        k++;
+      }
 
-        if (e.keyCode === up) {
-           console.log('up');
-        } else if (e.keyCode === right) {
-            console.log('right');
-        } else if (e.keyCode === down) {
-            console.log('down');
-        } else if (e.keyCode === left) {
-            console.log('left');
+    this.makeRandomCell(arr);
+    this.setState(arr);
+  }
+  moveRight(arr){
+    let k =0;
+      while (k < this.size - 1) {
+        for (let i = 0; i < this.size; i++) {
+          for (let j = 0; j < this.size - 1; j++) {
+            if (arr[i][j] !== 0 && arr[i][j + 1] === 0) {
+              arr[i][j + 1] = arr[i][j];
+              arr[i][j] = 0;
+            } else if (arr[i][j] === arr[i][j + 1]) {
+              arr[i][j + 1] = arr[i][j] + arr[i][j + 1];
+              arr[i][j] = 0;
+            }
+          }
         }
-        // else
-            // if (e.keyCode === n) {
-            // this.initBoard();
-        // }
-    }
-    render() {
-        return(
-            this.initNewField()
-        )
-    }
+        k++;
+      }
 
+    this.makeRandomCell(arr);
+    this.setState(arr);
+  }
+  render() {
+    return this.initNewField();
+  }
 }

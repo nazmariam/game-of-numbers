@@ -1,17 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import Field from "./field.js"
+import Field from "./field.js";
 
 class App extends Component {
-  state={
-
-  };
-  componentDidMount() {
-
-  }
+  state = {};
+  componentDidMount() {}
   render() {
     return (
-     <div className="App">
+      <div className="App">
         <Field />
       </div>
     );

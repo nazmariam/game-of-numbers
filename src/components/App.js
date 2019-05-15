@@ -78,37 +78,37 @@ class App extends Component {
     }
   }
 
-  moveUp(data){
+  checkStep = (arr, i,j) =>{
+    let moved;
+    if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
+      arr[i - 1][j] = arr[i][j];
+      arr[i][j] = 0;
+      moved = true;
+      if(i>=2){
+        this.checkStep(arr,i-1,j);
+        moved = true;
+        if(i>=3){
+          this.checkStep(arr,i-2,j)
+          moved = true;
+        }
+      }
 
+    } else if ((arr[i][j] === arr[i - 1][j])) {
+      arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
+      arr[i][j] = 0;
+      moved = true;
+    }
+    return {arr,moved};
+  };
+
+  moveUp(data){
     let arr = data.slice();
     let moved = false;
       for(let j = 0; j<this.size; j++){
           for (let i = 1; i < this.size; i++) {
-            if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
-                arr[i - 1][j] = arr[i][j];
-                arr[i][j] = 0;
-                moved=true
-                if (i>=2 && arr[i - 2][j] === 0) {
-                  arr[i - 2][j] = arr[i-1][j];
-                  arr[i-1][j] = 0;
-                  moved=true
-                  if (i>=3 && arr[i - 3][j] === 0) {
-                    arr[i - 3][j] = arr[i-2][j];
-                    arr[i-2][j] = 0;
-                    moved=true
-                  }else if(i>=3 && (arr[i-2][j] === arr[i - 3][j])){
-                    arr[i - 3][j] = arr[i-2][j] + arr[i - 3][j];
-                    arr[i-2][j] = 0;
-                    moved=true
-                  }
-                }else if(i>=2 && (arr[i-1][j] === arr[i - 2][j])){
-                  arr[i - 2][j] = arr[i-1][j] + arr[i - 2][j];
-                  arr[i-1][j] = 0;
-                }
-            } else if ((arr[i][j] === arr[i - 1][j])) {
-              arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
-              arr[i][j] = 0;
-            }
+            let result= this.checkStep(arr,i,j);
+            arr = result.arr;
+            moved = result.moved;
           }
       }
       console.log(moved);

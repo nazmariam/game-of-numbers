@@ -2,16 +2,30 @@ import React, { Component } from "react";
 import "./App.css";
 import Field from "./field.js";
 
-// const rt = (arr,i,j) =>{
-//   if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
-//     arr[i - 1][j] = arr[i][j];
-//     arr[i][j] = 0;
-//   } else if ((arr[i][j] === arr[i - 1][j])) {
-//     arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
-//     arr[i][j] = 0;
-//   }
-//   return arr;
-// };
+const reverseY = (matrix) =>{
+    let reversed=[];
+    for(let i=0; i<4; i++){
+        let row =[];
+        for(let j=0; j<4; j++){
+            row.push(matrix[3-i][j])
+        }
+        reversed.push(row)
+    }
+    return reversed
+};
+
+const rotate45 = (matrix) =>{
+    let reversed=[];
+    for(let i=0; i<4; i++){
+        let row =[];
+        for(let j=0; j<4; j++){
+            row.push(matrix[3-j][i])
+        }
+        reversed.push(row)
+    }
+    return reversed
+};
+
 class App extends Component {
   state = {
     cells: [
@@ -23,7 +37,7 @@ class App extends Component {
 
   };
   size = 4;
-  rrr = [];
+
   componentDidMount() {
     let {cells} = this.state;
     let cells1 = this.makeRandomCell(cells);
@@ -54,9 +68,7 @@ class App extends Component {
     }
     return avCells;
   }
-  makeCopy(obj){
-   return obj.slice()
-  }
+
   handleKeyDown(event) {
     const up = 38;
     const right = 39;
@@ -68,36 +80,36 @@ class App extends Component {
       this.setState(newState)
     } else if (event.keyCode === right) {
       let newState = this.moveRight(cells);
-      this.setState(newState)
+      this.setState({cells:newState})
     } else if (event.keyCode === down) {
       let newState = this.moveDown(cells);
-      this.setState(newState)
+      this.setState({cells:newState})
     } else if (event.keyCode === left) {
       let newState = this.moveLeft(cells);
-      this.setState(newState)
+      this.setState({cells:newState})
     }
   }
 
   checkStep = (arr, i,j) =>{
     let moved;
-    if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
-      arr[i - 1][j] = arr[i][j];
-      arr[i][j] = 0;
-      moved = true;
-      if(i>=2){
-        this.checkStep(arr,i-1,j);
+      if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
+        arr[i - 1][j] = arr[i][j];
+        arr[i][j] = 0;
         moved = true;
-        if(i>=3){
-          this.checkStep(arr,i-2,j)
+        if(i>=2){
+          this.checkStep(arr,i-1,j);
           moved = true;
+          if(i===3){
+            this.checkStep(arr,i-2,j);
+            moved = true;
+          }
         }
+      } else if ((arr[i][j] === arr[i - 1][j])) {
+        arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
+        arr[i][j] = 0;
+        moved = true;
       }
 
-    } else if ((arr[i][j] === arr[i - 1][j])) {
-      arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
-      arr[i][j] = 0;
-      moved = true;
-    }
     return {arr,moved};
   };
 
@@ -111,79 +123,54 @@ class App extends Component {
             moved = result.moved;
           }
       }
-      console.log(moved);
   return moved ? this.makeRandomCell(arr) : arr;
 
   }
   moveDown(data){
     let arr = data.slice();
-    let k =0;
-    while (k < this.size - 1) {
-      for (let i = this.size - 2; i >= 0; i--) {
-        for (let j = 0; j < this.size; j++) {
-          if (arr[i][j] !== 0 && arr[i + 1][j] === 0) {
-            arr[i + 1][j] = arr[i][j];
-            arr[i][j] = 0;
-          } else if (arr[i][j] === arr[i + 1][j]) {
-            arr[i + 1][j] = arr[i][j] + arr[i + 1][j];
-            arr[i][j] = 0;
+      let arr2 = reverseY(arr);
+      let moved = false;
+      for(let j = 0; j<this.size; j++){
+          for (let i = 1; i < this.size; i++) {
+              let result= this.checkStep(arr2,i,j);
+              arr = reverseY(result.arr);
+              moved = result.moved;
           }
-        }
       }
-      k++;
-    }
-    this.makeRandomCell(arr);
-    return arr;
+      return moved ? this.makeRandomCell(arr) : arr;
   }
   moveLeft(data){
     let arr = data.slice();
-    let k =0;
-    while (k < this.size - 1) {
-      for (let i = 0; i < this.size; i++) {
-        for (let j = 1; j < this.size; j++) {
-          if (arr[i][j] !== 0 && arr[i][j - 1] === 0) {
-            arr[i][j - 1] = arr[i][j];
-            arr[i][j] = 0;
-          } else if (arr[i][j] === arr[i][j - 1]) {
-            arr[i][j - 1] = arr[i][j] + arr[i][j - 1];
-            arr[i][j] = 0;
+
+    let rotated = rotate45(arr);
+      let moved = false;
+      for(let j = 0; j<this.size; j++){
+          for (let i = 1; i < this.size; i++) {
+              let result= this.checkStep(rotated,i,j);
+              arr = rotate45(rotate45(rotate45(result.arr)));
+              moved = result.moved;
           }
-        }
       }
-      k++;
-    }
-    this.makeRandomCell(arr);
-    return arr;
+      return moved ? this.makeRandomCell(arr) : arr;
   }
   moveRight(data){
     let arr = data.slice();
-    let k =0;
-    while (k < this.size - 1) {
-      for (let i = 0; i < this.size; i++) {
-        for (let j = 0; j < this.size - 1; j++) {
-          if (arr[i][j] !== 0 && arr[i][j + 1] === 0) {
-            arr[i][j + 1] = arr[i][j];
-            arr[i][j] = 0;
-          } else if (arr[i][j] === arr[i][j + 1]) {
-            arr[i][j + 1] = arr[i][j] + arr[i][j + 1];
-            arr[i][j] = 0;
+      let rotated = rotate45(rotate45(rotate45(arr)));
+      let moved = false;
+      for(let j = 0; j<this.size; j++){
+          for (let i = 1; i < this.size; i++) {
+              let result= this.checkStep(rotated,i,j);
+              arr = rotate45(result.arr);
+              moved = result.moved;
           }
-        }
       }
-      k++;
+      return moved ? this.makeRandomCell(arr) : arr;
     }
 
-    this.makeRandomCell(arr);
-    return arr;
-
-
-  }
 
 
   render() {
    let  {cells} = this.state;
-
-    // console.log(cells1);
     return (
       <div className="App">
         <Field cells={cells}/>

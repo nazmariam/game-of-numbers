@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "./App.css";
 import Field from "./field.js";
 
@@ -34,7 +35,7 @@ class App extends Component {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
-
+      latestCoordinates:{}
   };
   size = 4;
 
@@ -46,16 +47,18 @@ class App extends Component {
   }
   makeRandomCell(data) {
     let arr = data.slice();
-    let rt = this.availableCells();
-    if (this.availableCells().length) {
+    let rt = this.availableCells(arr);
+    if (this.availableCells(arr).length) {
       let randomNumber = Math.floor(Math.random() * rt.length);
       arr[rt[randomNumber].i][rt[randomNumber].j] = Math.random() < 0.9 ? 2 : 4;
+      this.setState({latestCoordinates:{i:rt[randomNumber].i,j:rt[randomNumber].j}})
+
     }
     return arr;
   }
-  availableCells() {
+  availableCells(data) {
     let avCells = [];
-    let {cells} = this.state;
+    let cells = data;
 
     if (cells.length) {
       for (let i = 0; i < this.size; i++) {
@@ -68,7 +71,6 @@ class App extends Component {
     }
     return avCells;
   }
-
   handleKeyDown(event) {
     const up = 38;
     const right = 39;
@@ -89,7 +91,6 @@ class App extends Component {
       this.setState({cells:newState})
     }
   }
-
   checkStep = (arr, i,j) =>{
     let moved;
       if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
@@ -112,7 +113,6 @@ class App extends Component {
 
     return {arr,moved};
   };
-
   moveUp(data){
     let arr = data.slice();
     let moved = false;
@@ -168,15 +168,15 @@ class App extends Component {
     }
 
 
-
   render() {
-   let  {cells} = this.state;
+   let  {cells,latestCoordinates} = this.state;
     return (
       <div className="App">
-        <Field cells={cells}/>
+        <Field cells={cells} latest={latestCoordinates}/>
       </div>
     );
   }
 }
 
 export default App;
+

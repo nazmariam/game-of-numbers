@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/game-of-numbers/precache-manifest.eb9d51b0461cee5913b887747c7cf6e4.js"
+  "/game-of-numbers/precache-manifest.95ff1d009ee93548aa6ccae0f9c028aa.js"
 );
 
 self.addEventListener('message', (event) => {

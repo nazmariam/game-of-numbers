@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { addToStorage, rotate45, match } from "../utils/helpers.js";
 import Field from "./field.js";
-import swipeDetect from "../utils/swipeDetection.js"
 class App extends Component {
   state = {
     cells: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -14,10 +13,65 @@ class App extends Component {
   componentDidMount() {
     let { cells } = this.state;
     let cells1 = this.makeRandomCell(cells);
+
     this.setState(this.makeRandomCell(cells1));
+
+    let
+      el = document.querySelector('.field'),
+      swipedir,
+      startX,
+      startY,
+      distX,
+      distY,
+      threshold = 150,
+      restraint = 100,
+      elapsedTime,
+      startTime;
+
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
-    this.handleSwipe.bind(this);
-  }
+    el.addEventListener('touchstart',function(e){
+      let touchobj = e.changedTouches[0]
+      swipedir = 'none';
+      startX = touchobj.pageX;
+      console.log('start x',startX);
+      startY = touchobj.pageY;
+      startTime = new Date().getTime();
+    }, false);
+
+
+    el.addEventListener('touchend',function(e){
+      let touchobj = e.changedTouches[0]
+      distX = touchobj.pageX - startX;
+      distY = touchobj.pageY - startY;
+      elapsedTime = new Date().getTime() - startTime;
+      if (elapsedTime){
+        if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint){
+          swipedir = (distX < 0)? 'left' : 'right'
+        }
+        else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint){
+          swipedir = (distY < 0)? 'up' : 'down'
+        }
+      }
+      console.log(swipedir);
+      if (swipedir === "up") {
+        let newState = this.moveUp(this.state.cells);
+        this.setState(newState);
+      } else if (swipedir === "right") {
+        let newState = this.moveRight(this.state.cells);
+        this.setState({ cells: newState });
+      } else if (swipedir === "down") {
+        let newState = this.moveDown(this.state.cells);
+        this.setState({ cells: newState });
+      } else if (swipedir === "left") {
+        let newState = this.moveLeft(this.state.cells);
+        this.setState({ cells: newState });
+      }
+
+
+      e.preventDefault()
+    }.bind(this), false);
+
+    }
   setBestScore() {
     let finishScore = this.state.score;
     let bestFromStorage = JSON.parse(localStorage.getItem("score"));
@@ -98,29 +152,6 @@ class App extends Component {
       this.setState({ cells: newState });
     }
   }
-  handleSwipe =()=>{
-    let field = document.querySelector('.field');
-    let {cells} = this.state;
-    swipeDetect(field, function(swipedir){
-      alert(swipedir);
-      if (swipedir === 'top') {
-        let newState = this.moveUp(cells);
-        this.setState(newState);
-      } else if (swipedir  === 'right') {
-        let newState = this.moveRight(cells);
-        this.setState({ cells: newState });
-      } else if (swipedir === 'down') {
-        let newState = this.moveDown(cells);
-        this.setState({ cells: newState });
-      } else if (swipedir === 'left') {
-        let newState = this.moveLeft(cells);
-        this.setState({ cells: newState });
-      }
-    })
-  }
-
-
-
 
 
   checkStep = (arr, i, j, moved) => {

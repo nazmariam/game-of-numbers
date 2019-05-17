@@ -30,16 +30,17 @@ class App extends Component {
 
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
     el.addEventListener('touchstart',function(e){
+      e.preventDefault()
       let touchobj = e.changedTouches[0]
       swipedir = 'none';
       startX = touchobj.pageX;
-      console.log('start x',startX);
       startY = touchobj.pageY;
       startTime = new Date().getTime();
     }, false);
 
 
     el.addEventListener('touchend',function(e){
+      e.preventDefault()
       let touchobj = e.changedTouches[0]
       distX = touchobj.pageX - startX;
       distY = touchobj.pageY - startY;
@@ -52,7 +53,6 @@ class App extends Component {
           swipedir = (distY < 0)? 'up' : 'down'
         }
       }
-      console.log(swipedir);
       if (swipedir === "up") {
         let newState = this.moveUp(this.state.cells);
         this.setState(newState);
@@ -68,7 +68,7 @@ class App extends Component {
       }
 
 
-      e.preventDefault()
+
     }.bind(this), false);
 
     }

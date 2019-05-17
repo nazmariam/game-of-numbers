@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { addToStorage, rotate45, match } from "../utils/helpers.js";
 import Field from "./field.js";
-
+import swipeDetect from "../utils/swipeDetection.js"
 class App extends Component {
   state = {
     cells: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -76,12 +76,28 @@ class App extends Component {
     );
   }
   handleKeyDown(event) {
-    const up = 38;
+    const top = 38;
     const right = 39;
     const down = 40;
     const left = 37;
     let { cells } = this.state;
-    if (event.keyCode === up) {
+    let field = document.querySelector('.field');
+    swipeDetect(field, function(swipedir){
+      if (event.keyCode === top) {
+        let newState = this.moveUp(cells);
+        this.setState(newState);
+      } else if (event.keyCode === right) {
+        let newState = this.moveRight(cells);
+        this.setState({ cells: newState });
+      } else if (event.keyCode === down) {
+        let newState = this.moveDown(cells);
+        this.setState({ cells: newState });
+      } else if (event.keyCode === left) {
+        let newState = this.moveLeft(cells);
+        this.setState({ cells: newState });
+      }
+    })
+    if (event.keyCode === top) {
       let newState = this.moveUp(cells);
       this.setState(newState);
     } else if (event.keyCode === right) {

@@ -16,6 +16,7 @@ class App extends Component {
     let cells1 = this.makeRandomCell(cells);
     this.setState(this.makeRandomCell(cells1));
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
+    this.handleSwipe.bind(this);
   }
   setBestScore() {
     let finishScore = this.state.score;
@@ -81,22 +82,8 @@ class App extends Component {
     const down = 40;
     const left = 37;
     let { cells } = this.state;
-    let field = document.querySelector('.field');
-    swipeDetect(field, function(swipedir){
-      if (event.keyCode === top) {
-        let newState = this.moveUp(cells);
-        this.setState(newState);
-      } else if (event.keyCode === right) {
-        let newState = this.moveRight(cells);
-        this.setState({ cells: newState });
-      } else if (event.keyCode === down) {
-        let newState = this.moveDown(cells);
-        this.setState({ cells: newState });
-      } else if (event.keyCode === left) {
-        let newState = this.moveLeft(cells);
-        this.setState({ cells: newState });
-      }
-    })
+
+
     if (event.keyCode === top) {
       let newState = this.moveUp(cells);
       this.setState(newState);
@@ -111,6 +98,31 @@ class App extends Component {
       this.setState({ cells: newState });
     }
   }
+  handleSwipe =()=>{
+    let field = document.querySelector('.field');
+    let {cells} = this.state;
+    swipeDetect(field, function(swipedir){
+      alert(swipedir);
+      if (swipedir === 'top') {
+        let newState = this.moveUp(cells);
+        this.setState(newState);
+      } else if (swipedir  === 'right') {
+        let newState = this.moveRight(cells);
+        this.setState({ cells: newState });
+      } else if (swipedir === 'down') {
+        let newState = this.moveDown(cells);
+        this.setState({ cells: newState });
+      } else if (swipedir === 'left') {
+        let newState = this.moveLeft(cells);
+        this.setState({ cells: newState });
+      }
+    })
+  }
+
+
+
+
+
   checkStep = (arr, i, j, moved) => {
     if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
       arr[i - 1][j] = arr[i][j];

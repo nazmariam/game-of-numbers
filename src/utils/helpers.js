@@ -3,10 +3,7 @@ export const addToStorage = (item, key) => {
   let newData = data.slice();
   if (item) {
     if (newData.indexOf(item) === -1) {
-      newData.push(item);
-    }
-    if (newData.length === 100) {
-      newData.shift();
+      newData.splice(0,1,item);
     }
     localStorage[key] = JSON.stringify(newData);
   }

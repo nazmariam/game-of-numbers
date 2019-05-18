@@ -66,9 +66,6 @@ class App extends Component {
         let newState = this.moveLeft(this.state.cells);
         this.setState({ cells: newState });
       }
-
-
-
     }.bind(this), false);
 
     }

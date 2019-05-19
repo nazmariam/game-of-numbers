@@ -143,7 +143,7 @@ class App extends Component {
 
     if (event.keyCode === top) {
       let newState = this.moveUp(cells);
-      this.setState(newState);
+      this.setState({cells:newState});
     } else if (event.keyCode === right) {
       let newState = this.moveRight(cells);
       this.setState({ cells: newState });
@@ -157,99 +157,67 @@ class App extends Component {
   }
 
   checkStep = (arr, moved) => {
-    let narr = arr.map(row=>{
-      //user move left -- we are going from left to right
-      for(let i=0;i<row.length;i++){
-        // console.log(row)
-        //loop through same row to rebuild it
-        // for(let i=0; i<row.length;i++){
-
-        //  3d level inception
-          if(row[i]===0) {
-            row[i]=row[i+1];
-            row[i+1]=0;
-            moved = true;
-          }else{
-            if (row[i]===row[i+1]){
-              row[i]=row[i]+row[i+1];
-              row[i+1]=0;
-              moved = true;
-            }else{continue}
+    let newMatrix =[];
+    arr.forEach(row=>{
+        //user move left -- we are going from left to right
+      let newRow=[];
+        for(let i=0;i<4;i++){
+          if(row[i]!==0){
+            newRow.push(row[i])
           }
-        // }
-      }
-    });
-
-    // for (let j = 0; j < this.size; j++) {
-    //   for (let i = 1; i < this.size; i++) {
-    //     if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
-    //       arr[i - 1][j] = arr[i][j];
-    //       arr[i][j] = 0;
-    //       moved = true;
-    //       // if (i >= 2) {
-    //       //   this.checkStep(arr,  moved);
-    //       //   moved = true;
-    //       //   if (i === 3) {
-    //       //     this.checkStep(arr,  moved);
-    //       //     moved = true;
-    //       //   }
-    //       // }
-    //     } else if (arr[i][j] === arr[i - 1][j]) {
-    //       arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
-    //       let score = this.state.score + arr[i][j];
-    //       this.setState({ score });
-    //       arr[i][j] = 0;
-    //       moved = true;
-    //       if (i > 2 && arr[i - 2][j] === arr[i - 1][j]) {
-    //         return {arr,moved}
-    //       }
-    //     }
-    //   }
-    // }
-    return { narr, moved };
+        }
+        while(newRow.length<4){
+          newRow.push(0)
+        }
+        for(let j=0;j<newRow.length-1;j++){
+          if(newRow[j]===0){
+            newRow[j]=newRow[j+1];
+            newRow[j+1]=0;
+          }else if(newRow[j]===newRow[j+1]){
+            newRow[j]=newRow[j]+newRow[j+1];
+            let score = this.state.score + newRow[j+1];
+            this.setState({ score });
+            newRow[j+1]=0;
+          }
+        }
+        newMatrix.push(newRow)
+      });
+    moved = JSON.stringify(arr)!==JSON.stringify(newMatrix);
+    arr = newMatrix;
+    return { arr, moved};
   };
   moveUp(data) {
-    let arr = data.slice();
-
-      let moved = false;
-
+    let arr = rotate45(rotate45(rotate45(data.slice())));
+    let moved = false;
     let result = this.checkStep(arr, moved);
-
-    arr = result.arr;
+    arr = rotate45(result.arr);
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
   }
   moveDown(data) {
-    let arr = data.slice();
-    let arr2 = rotate45(rotate45(arr));
+    let arr = rotate45(data.slice());
     let moved = false;
-    let result = this.checkStep(arr2, moved);
-
-    arr = rotate45(rotate45(result.arr));
+    let result = this.checkStep(arr, moved);
+    arr = rotate45(rotate45(rotate45(result.arr)));
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
   }
   moveLeft(data) {
     let arr = data.slice();
-
-    // let rotated = rotate45(arr);
     let moved = false;
     let result = this.checkStep(arr, moved);
-
     arr = result.arr;
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
   }
   moveRight(data) {
-    let arr = data.slice();
-    let rotated = rotate45(rotate45(rotate45(arr)));
+    let arr = rotate45(rotate45(data.slice()));
     let moved = false;
-    let result = this.checkStep(rotated, moved);
-
-    arr = rotate45(result.arr);
+    let result = this.checkStep(arr, moved);
+    arr = rotate45(rotate45(result.arr));
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;

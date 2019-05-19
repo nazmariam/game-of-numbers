@@ -14,7 +14,7 @@ const Field = props => {
           isWin = true;
         }
         return (
-          <div className="cell-wrapper" key={'wrap-'+x+y+i}>
+          <div className="cell-wrapper" key={"wrap-" + x + y + i}>
             <div
               className={
                 "cell " +

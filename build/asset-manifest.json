@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/game-of-numbers/static/css/main.39382334.chunk.css",
-    "main.js": "/game-of-numbers/static/js/main.ed1f0dd3.chunk.js",
-    "main.js.map": "/game-of-numbers/static/js/main.ed1f0dd3.chunk.js.map",
+    "main.css": "/game-of-numbers/static/css/main.9723b854.chunk.css",
+    "main.js": "/game-of-numbers/static/js/main.307f85b0.chunk.js",
+    "main.js.map": "/game-of-numbers/static/js/main.307f85b0.chunk.js.map",
     "runtime~main.js": "/game-of-numbers/static/js/runtime~main.7a351a09.js",
     "runtime~main.js.map": "/game-of-numbers/static/js/runtime~main.7a351a09.js.map",
     "static/js/2.65aa1cca.chunk.js": "/game-of-numbers/static/js/2.65aa1cca.chunk.js",
     "static/js/2.65aa1cca.chunk.js.map": "/game-of-numbers/static/js/2.65aa1cca.chunk.js.map",
     "index.html": "/game-of-numbers/index.html",
-    "precache-manifest.11a50bdf6680c016066550d78a621b7c.js": "/game-of-numbers/precache-manifest.11a50bdf6680c016066550d78a621b7c.js",
+    "precache-manifest.491819a099ecc6f077592977e075a821.js": "/game-of-numbers/precache-manifest.491819a099ecc6f077592977e075a821.js",
     "service-worker.js": "/game-of-numbers/service-worker.js",
-    "static/css/main.39382334.chunk.css.map": "/game-of-numbers/static/css/main.39382334.chunk.css.map"
+    "static/css/main.9723b854.chunk.css.map": "/game-of-numbers/static/css/main.9723b854.chunk.css.map"
   }
 }

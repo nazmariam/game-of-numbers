@@ -16,8 +16,7 @@ class App extends Component {
 
     this.setState(this.makeRandomCell(cells1));
 
-    let
-      el = document.querySelector('.field'),
+    let el = document.querySelector(".field"),
       swipedir,
       startX,
       startY,
@@ -29,46 +28,54 @@ class App extends Component {
       startTime;
 
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
-    el.addEventListener('touchstart',function(e){
-      e.preventDefault()
-      let touchobj = e.changedTouches[0]
-      swipedir = 'none';
-      startX = touchobj.pageX;
-      startY = touchobj.pageY;
-      startTime = new Date().getTime();
-    }, false);
+    el.addEventListener(
+      "touchstart",
+      function(e) {
+        e.preventDefault();
+        let touchobj = e.changedTouches[0];
+        swipedir = "none";
+        startX = touchobj.pageX;
+        startY = touchobj.pageY;
+        startTime = new Date().getTime();
+      },
+      false
+    );
 
-
-    el.addEventListener('touchend',function(e){
-      e.preventDefault()
-      let touchobj = e.changedTouches[0]
-      distX = touchobj.pageX - startX;
-      distY = touchobj.pageY - startY;
-      elapsedTime = new Date().getTime() - startTime;
-      if (elapsedTime){
-        if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint){
-          swipedir = (distX < 0)? 'left' : 'right'
+    el.addEventListener(
+      "touchend",
+      function(e) {
+        e.preventDefault();
+        let touchobj = e.changedTouches[0];
+        distX = touchobj.pageX - startX;
+        distY = touchobj.pageY - startY;
+        elapsedTime = new Date().getTime() - startTime;
+        if (elapsedTime) {
+          if (Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
+            swipedir = distX < 0 ? "left" : "right";
+          } else if (
+            Math.abs(distY) >= threshold &&
+            Math.abs(distX) <= restraint
+          ) {
+            swipedir = distY < 0 ? "up" : "down";
+          }
         }
-        else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint){
-          swipedir = (distY < 0)? 'up' : 'down'
+        if (swipedir === "up") {
+          let newState = this.moveUp(this.state.cells);
+          this.setState(newState);
+        } else if (swipedir === "right") {
+          let newState = this.moveRight(this.state.cells);
+          this.setState({ cells: newState });
+        } else if (swipedir === "down") {
+          let newState = this.moveDown(this.state.cells);
+          this.setState({ cells: newState });
+        } else if (swipedir === "left") {
+          let newState = this.moveLeft(this.state.cells);
+          this.setState({ cells: newState });
         }
-      }
-      if (swipedir === "up") {
-        let newState = this.moveUp(this.state.cells);
-        this.setState(newState);
-      } else if (swipedir === "right") {
-        let newState = this.moveRight(this.state.cells);
-        this.setState({ cells: newState });
-      } else if (swipedir === "down") {
-        let newState = this.moveDown(this.state.cells);
-        this.setState({ cells: newState });
-      } else if (swipedir === "left") {
-        let newState = this.moveLeft(this.state.cells);
-        this.setState({ cells: newState });
-      }
-    }.bind(this), false);
-
-    }
+      }.bind(this),
+      false
+    );
+  }
   setBestScore() {
     let finishScore = this.state.score;
     let bestFromStorage = JSON.parse(localStorage.getItem("score"));
@@ -134,7 +141,6 @@ class App extends Component {
     const left = 37;
     let { cells } = this.state;
 
-
     if (event.keyCode === top) {
       let newState = this.moveUp(cells);
       this.setState(newState);
@@ -150,39 +156,65 @@ class App extends Component {
     }
   }
 
+  checkStep = (arr, moved) => {
+    let narr = arr.map(row=>{
+      //user move left -- we are going from left to right
+      for(let i=0;i<row.length;i++){
+        // console.log(row)
+        //loop through same row to rebuild it
+        // for(let i=0; i<row.length;i++){
 
-  checkStep = (arr, i, j, moved) => {
-    if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
-      arr[i - 1][j] = arr[i][j];
-      arr[i][j] = 0;
-      moved = true;
-      if (i >= 2) {
-        this.checkStep(arr, i - 1, j, moved);
-        moved = true;
-        if (i === 3) {
-          this.checkStep(arr, i - 2, j, moved);
-          moved = true;
-        }
+        //  3d level inception
+          if(row[i]===0) {
+            row[i]=row[i+1];
+            row[i+1]=0;
+            moved = true;
+          }else{
+            if (row[i]===row[i+1]){
+              row[i]=row[i]+row[i+1];
+              row[i+1]=0;
+              moved = true;
+            }else{continue}
+          }
+        // }
       }
-    } else if (arr[i][j] === arr[i - 1][j]) {
-      arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
-      let score = this.state.score + arr[i][j];
-      this.setState({ score });
-      arr[i][j] = 0;
-      moved = true;
-    }
+    });
 
-    return { arr, moved };
+    // for (let j = 0; j < this.size; j++) {
+    //   for (let i = 1; i < this.size; i++) {
+    //     if (arr[i][j] !== 0 && arr[i - 1][j] === 0) {
+    //       arr[i - 1][j] = arr[i][j];
+    //       arr[i][j] = 0;
+    //       moved = true;
+    //       // if (i >= 2) {
+    //       //   this.checkStep(arr,  moved);
+    //       //   moved = true;
+    //       //   if (i === 3) {
+    //       //     this.checkStep(arr,  moved);
+    //       //     moved = true;
+    //       //   }
+    //       // }
+    //     } else if (arr[i][j] === arr[i - 1][j]) {
+    //       arr[i - 1][j] = arr[i][j] + arr[i - 1][j];
+    //       let score = this.state.score + arr[i][j];
+    //       this.setState({ score });
+    //       arr[i][j] = 0;
+    //       moved = true;
+    //       if (i > 2 && arr[i - 2][j] === arr[i - 1][j]) {
+    //         return {arr,moved}
+    //       }
+    //     }
+    //   }
+    // }
+    return { narr, moved };
   };
   moveUp(data) {
     let arr = data.slice();
-    let result,
-      moved = false;
-    for (let j = 0; j < this.size; j++) {
-      for (let i = 1; i < this.size; i++) {
-        result = this.checkStep(arr, i, j, moved);
-      }
-    }
+
+      let moved = false;
+
+    let result = this.checkStep(arr, moved);
+
     arr = result.arr;
     moved = result.moved;
     this.ifGamesOver(arr);
@@ -192,12 +224,8 @@ class App extends Component {
     let arr = data.slice();
     let arr2 = rotate45(rotate45(arr));
     let moved = false;
-    let result;
-    for (let j = 0; j < this.size; j++) {
-      for (let i = 1; i < this.size; i++) {
-        result = this.checkStep(arr2, i, j, moved);
-      }
-    }
+    let result = this.checkStep(arr2, moved);
+
     arr = rotate45(rotate45(result.arr));
     moved = result.moved;
     this.ifGamesOver(arr);
@@ -206,15 +234,11 @@ class App extends Component {
   moveLeft(data) {
     let arr = data.slice();
 
-    let rotated = rotate45(arr);
+    // let rotated = rotate45(arr);
     let moved = false;
-    let result;
-    for (let j = 0; j < this.size; j++) {
-      for (let i = 1; i < this.size; i++) {
-        result = this.checkStep(rotated, i, j, moved);
-      }
-    }
-    arr = rotate45(rotate45(rotate45(result.arr)));
+    let result = this.checkStep(arr, moved);
+
+    arr = result.arr;
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
@@ -223,12 +247,8 @@ class App extends Component {
     let arr = data.slice();
     let rotated = rotate45(rotate45(rotate45(arr)));
     let moved = false;
-    let result;
-    for (let j = 0; j < this.size; j++) {
-      for (let i = 1; i < this.size; i++) {
-        result = this.checkStep(rotated, i, j, moved);
-      }
-    }
+    let result = this.checkStep(rotated, moved);
+
     arr = rotate45(result.arr);
     moved = result.moved;
     this.ifGamesOver(arr);

@@ -3,7 +3,7 @@ export const addToStorage = (item, key) => {
   let newData = data.slice();
   if (item) {
     if (newData.indexOf(item) === -1) {
-      newData.splice(0,1,item);
+      newData.splice(0, 1, item);
     }
     localStorage[key] = JSON.stringify(newData);
   }
@@ -19,7 +19,7 @@ export const reverseY = matrix => {
   }
   return reversed;
 };
-export const rotate45 = matrix => {
+export const rotate90 = matrix => {
   let reversed = [];
   for (let i = 0; i < 4; i++) {
     let row = [];

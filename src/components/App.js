@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { addToStorage, rotate45, match } from "../utils/helpers.js";
+import { addToStorage, rotate90, match } from "../utils/helpers.js";
 import Field from "./field.js";
 class App extends Component {
   state = {
@@ -143,7 +143,7 @@ class App extends Component {
 
     if (event.keyCode === top) {
       let newState = this.moveUp(cells);
-      this.setState({cells:newState});
+      this.setState({ cells: newState });
     } else if (event.keyCode === right) {
       let newState = this.moveRight(cells);
       this.setState({ cells: newState });
@@ -157,49 +157,49 @@ class App extends Component {
   }
 
   checkStep = (arr, moved) => {
-    let newMatrix =[];
-    arr.forEach(row=>{
-        //user move left -- we are going from left to right
-      let newRow=[];
-        for(let i=0;i<4;i++){
-          if(row[i]!==0){
-            newRow.push(row[i])
-          }
+    let newMatrix = [];
+    arr.forEach(row => {
+      //user move left -- we are going from left to right
+      let newRow = [];
+      for (let i = 0; i < 4; i++) {
+        if (row[i] !== 0) {
+          newRow.push(row[i]);
         }
-        while(newRow.length<4){
-          newRow.push(0)
+      }
+      while (newRow.length < 4) {
+        newRow.push(0);
+      }
+      for (let j = 0; j < newRow.length - 1; j++) {
+        if (newRow[j] === 0) {
+          newRow[j] = newRow[j + 1];
+          newRow[j + 1] = 0;
+        } else if (newRow[j] === newRow[j + 1]) {
+          newRow[j] = newRow[j] + newRow[j + 1];
+          let score = this.state.score + newRow[j + 1];
+          this.setState({ score });
+          newRow[j + 1] = 0;
         }
-        for(let j=0;j<newRow.length-1;j++){
-          if(newRow[j]===0){
-            newRow[j]=newRow[j+1];
-            newRow[j+1]=0;
-          }else if(newRow[j]===newRow[j+1]){
-            newRow[j]=newRow[j]+newRow[j+1];
-            let score = this.state.score + newRow[j+1];
-            this.setState({ score });
-            newRow[j+1]=0;
-          }
-        }
-        newMatrix.push(newRow)
-      });
-    moved = JSON.stringify(arr)!==JSON.stringify(newMatrix);
+      }
+      newMatrix.push(newRow);
+    });
+    moved = JSON.stringify(arr) !== JSON.stringify(newMatrix);
     arr = newMatrix;
-    return { arr, moved};
+    return { arr, moved };
   };
   moveUp(data) {
-    let arr = rotate45(rotate45(rotate45(data.slice())));
+    let arr = rotate90(rotate90(rotate90(data.slice())));
     let moved = false;
     let result = this.checkStep(arr, moved);
-    arr = rotate45(result.arr);
+    arr = rotate90(result.arr);
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
   }
   moveDown(data) {
-    let arr = rotate45(data.slice());
+    let arr = rotate90(data.slice());
     let moved = false;
     let result = this.checkStep(arr, moved);
-    arr = rotate45(rotate45(rotate45(result.arr)));
+    arr = rotate90(rotate90(rotate90(result.arr)));
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;
@@ -214,10 +214,10 @@ class App extends Component {
     return moved ? this.makeRandomCell(arr) : arr;
   }
   moveRight(data) {
-    let arr = rotate45(rotate45(data.slice()));
+    let arr = rotate90(rotate90(data.slice()));
     let moved = false;
     let result = this.checkStep(arr, moved);
-    arr = rotate45(rotate45(result.arr));
+    arr = rotate90(rotate90(result.arr));
     moved = result.moved;
     this.ifGamesOver(arr);
     return moved ? this.makeRandomCell(arr) : arr;

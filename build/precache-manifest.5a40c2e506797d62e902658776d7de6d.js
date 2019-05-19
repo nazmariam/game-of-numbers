@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b59301f0dc1acfcaa52923f28fe90a56",
+    "revision": "f04fff963e876a9ef3752f6b6d4882f1",
     "url": "/game-of-numbers/index.html"
   },
   {
-    "revision": "f90cd00aa73af72e553f",
+    "revision": "41cc4328104567cba836",
     "url": "/game-of-numbers/static/css/main.9723b854.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/game-of-numbers/static/js/2.65aa1cca.chunk.js"
   },
   {
-    "revision": "f90cd00aa73af72e553f",
-    "url": "/game-of-numbers/static/js/main.307f85b0.chunk.js"
+    "revision": "41cc4328104567cba836",
+    "url": "/game-of-numbers/static/js/main.7ff8d5d6.chunk.js"
   },
   {
     "revision": "6770d3ff94c5e39fc988",
